@@ -33,6 +33,11 @@ class HeroesTableViewController: UITableViewController {
         navigationController?.setNavigationBarHidden(false, animated: true)
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let vc = segue.destination as! HeroViewController
+        vc.hero = heroes[tableView.indexPathForSelectedRow!.row]
+    }
+    
     func loadHeroes() {
         loadingHeroes = true
         MarvelAPI.loadHeros(name: name, page: currentPage, onComplete: { (info) in
@@ -65,6 +70,13 @@ class HeroesTableViewController: UITableViewController {
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+            if indexPath.row == heroes.count - 10 && !loadingHeroes && heroes.count != total {
+                currentPage += 1
+                loadHeroes()
+                print("Carregando mais Heróis...")
+            }
+    }
 
     /*
     // Override to support conditional editing of the table view.
